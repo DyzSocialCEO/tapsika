@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { HelpCircle, X, Flame, Wallet, Coins, ChevronRight } from 'lucide-react'
+import { isInTelegram } from '../lib/telegram'
 
 export default function HomeScreen({ user, onNavigate }) {
   const [showHowItWorks, setShowHowItWorks] = useState(false)
@@ -27,8 +28,8 @@ export default function HomeScreen({ user, onNavigate }) {
 
   return (
     <div className="min-h-full bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 flex flex-col">
-      {/* Header */}
-      <div className="px-4 py-3 flex justify-between items-center">
+      {/* Header - with safe area padding for Telegram */}
+      <div className={`px-4 py-3 flex justify-between items-center ${isInTelegram() ? 'pt-14' : ''}`}>
         <div className="flex items-center gap-3">
           <div className="w-11 h-11 bg-gradient-to-br from-orange-400 to-yellow-400 rounded-full flex items-center justify-center shadow-lg shadow-orange-500/30">
             <span className="text-xl">🏺</span>
