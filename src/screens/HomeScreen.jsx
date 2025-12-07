@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { HelpCircle, X, Flame, Wallet, Coins, ChevronRight } from 'lucide-react'
-import { isInTelegram } from '../lib/telegram'
 
 export default function HomeScreen({ user, onNavigate }) {
   const [showHowItWorks, setShowHowItWorks] = useState(false)
@@ -28,22 +27,20 @@ export default function HomeScreen({ user, onNavigate }) {
 
   return (
     <div className="min-h-full bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 flex flex-col">
-      {/* Header - with safe area padding for Telegram */}
-      <div className={`px-4 py-3 flex justify-between items-center ${isInTelegram() ? 'pt-14' : ''}`}>
-        <div className="flex items-center gap-3">
-          <div className="w-11 h-11 bg-gradient-to-br from-orange-400 to-yellow-400 rounded-full flex items-center justify-center shadow-lg shadow-orange-500/30">
-            <span className="text-xl">🏺</span>
+      {/* Header - Centered, tappable for profile */}
+      <div className="px-4 pt-4 pb-2">
+        <button 
+          onClick={() => onNavigate('profile')}
+          className="mx-auto flex items-center gap-3 bg-slate-800/50 rounded-full px-4 py-2 hover:bg-slate-700/50 transition-colors"
+        >
+          <div className="w-10 h-10 bg-gradient-to-br from-orange-400 to-yellow-400 rounded-full flex items-center justify-center shadow-lg shadow-orange-500/30">
+            <span className="text-lg">🏺</span>
           </div>
-          <div>
-            <p className="text-white font-bold">{user?.name || 'Tapsika User'}</p>
+          <div className="text-left">
+            <p className="text-white font-bold text-sm">{user?.name || 'Tapsika User'}</p>
             <p className="text-gray-400 text-xs capitalize">{user?.jarLevel || 'Bronze'} Jar</p>
           </div>
-        </div>
-        <button 
-          onClick={() => onNavigate('profile')} 
-          className="w-10 h-10 bg-slate-700/80 rounded-full flex items-center justify-center hover:bg-slate-600 transition-colors"
-        >
-          <span className="text-xl">👤</span>
+          <ChevronRight size={16} className="text-gray-400 ml-1" />
         </button>
       </div>
 

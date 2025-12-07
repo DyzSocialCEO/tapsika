@@ -207,18 +207,20 @@ export default function GameScreen({ user, setUser, playsRemaining, setPlaysRema
 
   return (
     <div className="h-full bg-gradient-to-b from-indigo-900 via-purple-900 to-slate-900 flex flex-col">
-      {/* Header */}
-      <div className="px-4 py-3 flex items-center justify-between">
-        <button 
-          onClick={() => onNavigate('home')} 
-          className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center"
-        >
-          <ArrowLeft size={20} className="text-white" />
-        </button>
-        <h2 className="text-white font-bold text-lg">Coin Catch</h2>
-        <div className="bg-white/10 rounded-full px-3 py-1.5 flex items-center gap-1">
-          <span className="text-amber-400 font-bold">{user?.gameCoins || 0}</span>
-          <Coins size={16} className="text-amber-400" />
+      {/* Header - Centered */}
+      <div className="px-4 pt-4 pb-2">
+        <div className="flex items-center justify-center gap-3">
+          <button 
+            onClick={() => onNavigate('home')} 
+            className="w-9 h-9 bg-white/10 rounded-full flex items-center justify-center"
+          >
+            <ArrowLeft size={18} className="text-white" />
+          </button>
+          <h2 className="text-white font-bold text-lg">Coin Catch</h2>
+          <div className="bg-white/10 rounded-full px-3 py-1 flex items-center gap-1">
+            <span className="text-amber-400 font-bold text-sm">{user?.gameCoins || 0}</span>
+            <Coins size={14} className="text-amber-400" />
+          </div>
         </div>
       </div>
 
