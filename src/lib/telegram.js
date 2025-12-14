@@ -22,31 +22,74 @@ export function getTelegram() {
 }
 
 export function isInTelegram() {
-  return typeof window !== 'undefined' && !!window.Telegram?.WebApp?.initDataUnsafe?.user
+  // More robust check
+  if (typeof window === 'undefined') return false
+  
+  const webApp = window.Telegram?.WebApp
+  if (!webApp) return false
+  
+  // Check multiple indicators that we're in Telegram
+  const hasUser = !!webApp.initDataUnsafe?.user
+  const hasInitData = !!webApp.initData && webApp.initData.length > 0
+  const hasPlatform = !!webApp.platform && webApp.platform !== 'unknown'
+  
+  return hasUser || hasInitData || hasPlatform
 }
 
 export function getTelegramUser() {
-  if (isInTelegram()) {
-    const user = window.Telegram.WebApp.initDataUnsafe.user
-    return {
-      id: user.id,
-      username: user.username || '',
-      first_name: user.first_name || 'User',
-      last_name: user.last_name || '',
-      language_code: user.language_code || 'en',
-      is_premium: user.is_premium || false,
+  // First, try to get real Telegram user
+  if (typeof window !== 'undefined' && window.Telegram?.WebApp) {
+    const webApp = window.Telegram.WebApp
+    const user = webApp.initDataUnsafe?.user
+    
+    if (user && user.id) {
+      console.log('✅ Telegram user detected:', user.id)
+      return {
+        id: user.id,
+        username: user.username || '',
+        first_name: user.first_name || 'User',
+        last_name: user.last_name || '',
+        language_code: user.language_code || 'en',
+        is_premium: user.is_premium || false,
+      }
     }
   }
   
-  // Dev mode fallback - FIXED ID so data persists
+  // Dev mode fallback - Use session-based unique ID
+  // This ensures different browser tabs/sessions get different IDs
+  let devId = sessionStorage.getItem('tapsika_dev_id')
+  if (!devId) {
+    // Generate a unique dev ID based on timestamp + random
+    devId = 'dev_' + Date.now() + '_' + Math.floor(Math.random() * 10000)
+    sessionStorage.setItem('tapsika_dev_id', devId)
+  }
+  
+  // For database, we need a numeric ID
+  // Use a hash of the devId string
+  const numericId = Math.abs(hashCode(devId))
+  
+  console.log('⚠️ Dev mode - using ID:', numericId)
+  
   return {
-    id: 999999999,
+    id: numericId,
     username: 'dev_user',
     first_name: 'Dev User',
     last_name: '',
     language_code: 'en',
     is_premium: false,
+    _isDev: true,
   }
+}
+
+// Simple hash function to convert string to number
+function hashCode(str) {
+  let hash = 0
+  for (let i = 0; i < str.length; i++) {
+    const char = str.charCodeAt(i)
+    hash = ((hash << 5) - hash) + char
+    hash = hash & hash // Convert to 32bit integer
+  }
+  return hash
 }
 
 export function hapticFeedback(type = 'light') {
